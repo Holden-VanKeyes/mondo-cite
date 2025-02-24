@@ -6,20 +6,40 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:list": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex migrate:list",
+    "db:migrate": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex migrate:latest",
+    "db:migrate:make": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex migrate:make",
+    "db:seed:make": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex seed:make",
+    "db:seed": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex seed:run",
+    "db:rollback": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex migrate:rollback --all",
+    "db:migrate:down": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex migrate:down"
   },
   "dependencies": {
+    "@auth/pg-adapter": "^1.7.4",
+    "@emotion/react": "^11.14.0",
+    "@mantine/core": "^7.16.1",
+    "@mantine/form": "^7.16.1",
+    "@mantine/hooks": "^7.16.1",
+    "@mantine/notifications": "^7.16.3",
+    "@types/knex": "^0.16.1",
+    "knex": "^3.1.0",
+    "next": "15.1.5",
+    "next-auth": "^5.0.0-beta.25",
+    "pg": "^8.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.1.5"
+    "tabler-icons-react": "^1.56.0"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20.17.14",
+    "@types/pg": "^8.11.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.5",
-    "@eslint/eslintrc": "^3"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }

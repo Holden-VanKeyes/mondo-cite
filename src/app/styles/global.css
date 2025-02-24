@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -38,5 +38,14 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+} */
+@layer base {
+  :root {
+    --brand-primary: #4d63ff;
+    --brand-secondary: #0026ff;
+    --brand-accent: #b3c0ff;
+
+    /* Add any other global CSS variables here */
   }
 }
