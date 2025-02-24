@@ -2,17 +2,17 @@ import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   // Users table
-  await knex.schema.createTable('users', (table) => {
-    table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
-    table.string('email').notNullable().unique()
-    table.string('name')
-    table.timestamp('emailVerified')
-    table.string('image')
-    table.string('institution')
-    table.enum('plan', ['free', 'premium', 'institutional']).defaultTo('free')
-    table.integer('citation_count').defaultTo(0)
-    table.timestamps(true, true)
-  })
+  // await knex.schema.createTable('users', (table) => {
+  //   table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))
+  //   table.string('email').notNullable().unique()
+  //   table.string('name')
+  //   table.timestamp('emailVerified')
+  //   table.string('image')
+  //   table.string('institution')
+  //   table.enum('plan', ['free', 'premium', 'institutional']).defaultTo('free')
+  //   table.integer('citation_count').defaultTo(0)
+  //   table.timestamps(true, true)
+  // })
 
   // Accounts table
   await knex.schema.createTable('accounts', (table) => {
@@ -20,7 +20,7 @@ export async function up(knex: Knex): Promise<void> {
     table
       .uuid('userId')
       .notNullable()
-      .references('uuid')
+      .references('id')
       .inTable('users')
       .onDelete('CASCADE')
     table.string('type').notNullable()
@@ -44,7 +44,7 @@ export async function up(knex: Knex): Promise<void> {
     table
       .uuid('userId')
       .notNullable()
-      .references('uuid')
+      .references('id')
       .inTable('users')
       .onDelete('CASCADE')
     table.timestamp('expires').notNullable()

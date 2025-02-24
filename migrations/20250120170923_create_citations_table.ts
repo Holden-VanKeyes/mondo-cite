@@ -13,11 +13,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('doi')
     table.string('url')
     table.text('abstract')
-    table
-      .uuid('user_id')
-      .references('uuid')
-      .inTable('users')
-      .onDelete('CASCADE')
+    table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE')
     table.timestamps(true, true)
   })
 }
