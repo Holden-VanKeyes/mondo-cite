@@ -9,14 +9,19 @@ import {
   Tabs,
   Paper,
   Container,
+  Center,
+  useMantineTheme,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { PreviewDrawer } from './PreviewDrawer'
+import { useMediaQuery } from '@mantine/hooks'
 
 export default function CitationInputForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
+  const theme = useMantineTheme()
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`)
 
   const form = useForm({
     initialValues: {
@@ -126,12 +131,12 @@ export default function CitationInputForm() {
 
   return (
     <>
-      <Container>
-        <Paper withBorder p="md" mt="xl">
-          <Tabs defaultValue="doi">
+      <Container size="sm">
+        <Paper withBorder p={isMobile ? 'md' : 'xl'} mt={60}>
+          <Tabs defaultValue="manual">
             <Tabs.List>
-              <Tabs.Tab value="doi">Add by DOI</Tabs.Tab>
               <Tabs.Tab value="manual">Manual Entry</Tabs.Tab>
+              <Tabs.Tab value="doi">Add by DOI</Tabs.Tab>
             </Tabs.List>
 
             <Tabs.Panel value="doi" pt="xs">
@@ -194,8 +199,12 @@ export default function CitationInputForm() {
                       {...form.getInputProps('pages')}
                     />
                   </Group>
-                  <Button type="submit">Save Citation</Button>
                 </Stack>
+                <Center mt="lg">
+                  <Button variant="outline" type="submit">
+                    Save Citation
+                  </Button>
+                </Center>
               </form>
             </Tabs.Panel>
           </Tabs>

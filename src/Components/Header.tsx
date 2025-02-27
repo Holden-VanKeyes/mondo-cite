@@ -13,7 +13,6 @@ import {
   Book2,
   ChevronDown,
   Clock,
-  Code,
   Filter,
   Folders,
   Star,
@@ -32,7 +31,7 @@ import {
   HoverCard,
   ScrollArea,
   SimpleGrid,
-  Stack,
+  Avatar,
   Text,
   ThemeIcon,
   UnstyledButton,
@@ -45,6 +44,7 @@ import { signIn, signOut } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { useUser } from '@/GlobalHelpers/userContext'
 
 import Link from 'next/link'
 
@@ -89,6 +89,8 @@ export function Header() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const callbackUrl = searchParams.get('callbackUrl') || '/'
+  const { user } = useUser()
+  console.log('USER HERE', user)
 
   useEffect(() => {
     closeDrawer()
@@ -160,19 +162,45 @@ export function Header() {
                   {links}
                 </SimpleGrid>
 
-                {/* <div className={classes.dropdownFooter}>
+                <div className={classes.dropdownFooter}>
                   <Group justify="space-between">
                     <div>
                       <Text fw={500} fz="sm">
                         Get started
                       </Text>
-                      <Text size="xs" c="dimmed">
+                      {/* <Text size="xs" c="dimmed">
                         Their food sources have decreased, and their numbers
-                      </Text>
+                      </Text> */}
                     </div>
-                    <Button variant="default">Get started</Button>
+                    {!user ? (
+                      <Group>
+                        <Button
+                          variant="default"
+                          onClick={() => signIn('auth0-login', { callbackUrl })}
+                        >
+                          Log in
+                        </Button>
+                        <Button
+                          variant="default"
+                          onClick={() =>
+                            signIn('auth0-signup', { callbackUrl })
+                          }
+                        >
+                          Sign up
+                        </Button>
+                      </Group>
+                    ) : (
+                      <Button
+                        variant="default"
+                        onClick={() =>
+                          signOut({ callbackUrl: 'http://localhost:3000' })
+                        }
+                      >
+                        Sign out
+                      </Button>
+                    )}
                   </Group>
-                </div> */}
+                </div>
               </HoverCard.Dropdown>
             </HoverCard>
             <Link href="/settings" className={classes.link}>
@@ -184,10 +212,14 @@ export function Header() {
           </Group>
 
           <Group visibleFrom="sm">
+            <Avatar color="blue" name={user?.name || ''} />
+
             <Button onClick={() => signIn('auth0', { callbackUrl })}>
               Log in
             </Button>
-            <Button onClick={() => signOut({ callbackUrl: '/' })}>
+            <Button
+              onClick={() => signOut({ callbackUrl: 'http://localhost:3000' })}
+            >
               Log Out
             </Button>
           </Group>
@@ -246,7 +278,7 @@ export function Header() {
             <Button onClick={() => signIn('auth0', { callbackUrl })}>
               Log in
             </Button>
-            <Button onClick={() => signOut({ callbackUrl: '/auth/signin' })}>
+            <Button onClick={() => signOut({ callbackUrl: '/' })}>
               Log Out
             </Button>
           </Group>

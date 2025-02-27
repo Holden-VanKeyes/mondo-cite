@@ -19,11 +19,25 @@ export const config = {
   adapter: PostgresAdapter(pool),
   providers: [
     Auth0Provider({
+      id: 'auth0-login',
       clientId: process.env.AUTH0_CLIENT_ID,
       clientSecret: process.env.AUTH0_CLIENT_SECRET,
       issuer: process.env.AUTH0_ISSUER,
+      // Default login configuration
+    }),
+    Auth0Provider({
+      id: 'auth0-signup',
+      clientId: process.env.AUTH0_CLIENT_ID,
+      clientSecret: process.env.AUTH0_CLIENT_SECRET,
+      issuer: process.env.AUTH0_ISSUER,
+      authorization: {
+        params: {
+          screen_hint: 'signup',
+        },
+      },
     }),
   ],
+
   callbacks: {
     async signIn({ user, profile }) {
       try {
@@ -53,13 +67,9 @@ export const config = {
       }
       return token
     },
-    async session({ session, token }) {
+    async session({ session }) {
       // Instead of user.id, we'll use token
-      console.log('Session Callback:', { session, token })
-
-      if (session.user && token.sub) {
-        session.user.id = token.sub // Auth0 provides the user ID in the token's 'sub' claim
-      }
+      console.log('hit session', session)
       return session
     },
   },
