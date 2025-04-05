@@ -1,0 +1,110 @@
+/* Components/LandingPage.module.css */
+
+.hero {
+  position: relative;
+  /* background-image: linear-gradient(60deg, #1971c2 0%, #228be6 100%); */
+  background-image: linear-gradient(14deg, #c7cedb 0%, #228be6 100%);
+  color: white;
+  padding: 3rem;
+  border-radius: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.heroImagePlaceholder {
+  height: 100%;
+  /* background-color: rgba(255, 255, 255, 0.1); */
+  background-color: rgba(248, 248, 248, 0.327);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  padding: 1.5rem;
+}
+
+.citationSlide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.exampleText {
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.5;
+  color: rgb(13, 13, 13);
+  font-size: 0.8rem;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.featureCard {
+  height: 100%;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.styleExample {
+  background-color: #edeff1;
+  padding: 1.5rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+/* Dashboard related styles */
+.citationCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.citationCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.citationCardContent {
+  flex: 1;
+}
+
+.tag {
+  text-transform: lowercase;
+}
+
+.header {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.placeholder {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 1rem;
+  }
+}

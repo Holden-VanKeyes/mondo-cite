@@ -148,10 +148,12 @@ export default function CitationInputForm() {
                     placeholder="10.1000/example.123"
                     {...form.getInputProps('doi')}
                   />
-                  <Button type="submit" loading={isLoading}>
+                </Stack>
+                <Center mt="xl">
+                  <Button type="submit" variant="outline" loading={isLoading}>
                     Look up DOI
                   </Button>
-                </Stack>
+                </Center>
               </form>
             </Tabs.Panel>
 
@@ -200,7 +202,7 @@ export default function CitationInputForm() {
                     />
                   </Group>
                 </Stack>
-                <Center mt="lg">
+                <Center mt="xl">
                   <Button variant="outline" type="submit">
                     Save Citation
                   </Button>

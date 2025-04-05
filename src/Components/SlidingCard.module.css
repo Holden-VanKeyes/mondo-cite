@@ -1,0 +1,85 @@
+/* Components/SlidingCitationCard.module.css */
+
+.slidingContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s linear;
+}
+
+.currentCard {
+  transform: translateX(0);
+  z-index: 1;
+}
+
+.nextCard {
+  transform: translateX(100%); /* Start off-screen to the right */
+  z-index: 0;
+}
+
+/* .slideOutLeft {
+  transform: translateX(-100%);
+} */
+
+/* .slideOutRight {
+  transform: translateX(100%);
+} */
+
+.slideInRight {
+  transform: translateX(0);
+  z-index: 2;
+}
+
+/* .slideInLeft {
+  transform: translateX(0);
+  z-index: 2;
+} */
+
+.styleExample {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  flex: 1;
+  overflow-y: auto; /* Allow scrolling if content is too long */
+}
+
+/* For the hero section - white text on blue background */
+.heroCard .styleExample {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+/* Navigation dots */
+.dotsContainer {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.activeDot {
+  background-color: white;
+}

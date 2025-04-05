@@ -210,25 +210,14 @@ export function Header() {
               Academy
             </a> */}
           </Group>
-
-          <Group visibleFrom="sm">
-            <Avatar color="blue" name={user?.name || ''} />
-
-            <Button onClick={() => signIn('auth0', { callbackUrl })}>
-              Log in
-            </Button>
-            <Button
-              onClick={() => signOut({ callbackUrl: 'http://localhost:3000' })}
-            >
-              Log Out
-            </Button>
-          </Group>
-
           <Burger
             opened={drawerOpened}
             onClick={toggleDrawer}
             hiddenFrom="sm"
           />
+          <Group>
+            <Avatar color="blue" name={user?.name || ''} />
+          </Group>
         </Group>
       </header>
 
@@ -275,7 +264,7 @@ export function Header() {
           <Divider my="sm" />
 
           <Group justify="center" grow pb="xl" px="md">
-            <Button onClick={() => signIn('auth0', { callbackUrl })}>
+            <Button onClick={() => signIn('auth0-login', { callbackUrl })}>
               Log in
             </Button>
             <Button onClick={() => signOut({ callbackUrl: '/' })}>
