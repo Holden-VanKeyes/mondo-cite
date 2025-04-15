@@ -43,7 +43,7 @@ import classes from './Header.module.css'
 import { signIn, signOut } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useUser } from '@/GlobalHelpers/userContext'
 
 import Link from 'next/link'

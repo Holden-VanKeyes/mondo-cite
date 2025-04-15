@@ -1,0 +1,11 @@
+.citationCard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cardFooter {
+  border-top: 1px solid
+    light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  margin-top: auto;
+}

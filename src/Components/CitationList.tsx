@@ -33,14 +33,14 @@ export default function CitationList() {
         <Paper key={citation.id} p="md" withBorder>
           <Title order={4}>{citation.title}</Title>
           <Group gap="xs" mt="xs">
-            <Text size="sm" color="dimmed">
+            <Text size="sm" c="dimmed">
               {citation.authors
                 .map((a) => `${a.lastName}, ${a.firstName}`)
                 .join('; ')}
             </Text>
           </Group>
           {citation.journal && (
-            <Text size="sm" mt="xs" color="dimmed">
+            <Text size="sm" mt="xs" c="dimmed">
               {citation.journal} ({citation.year})
             </Text>
           )}

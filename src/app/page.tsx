@@ -7,11 +7,15 @@ import LandingPage from '@/Components/LandingPage'
 import { useSession } from 'next-auth/react'
 import Dashboard from '@/Components/Dashboard'
 import { LoadingOverlay } from '@mantine/core'
+import { usePathname } from 'next/navigation'
+import path from 'path'
 
 export default function Home() {
   const { data: session, status } = useSession()
   const [isLoading, setIsLoading] = useState(true)
   const initialLoadRef = useRef(true)
+  const pathname = usePathname()
+  console.log('PATH', pathname)
 
   useEffect(() => {
     // Only show loading on initial page load when checking auth
@@ -30,7 +34,6 @@ export default function Home() {
       }
     }
   }, [status])
-  console.log('HERE', initialLoadRef)
 
   if ((status === 'loading' || isLoading) && initialLoadRef.current) {
     return (
@@ -48,7 +51,7 @@ export default function Home() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       {session ? <Dashboard /> : <LandingPage />}
     </>
   )

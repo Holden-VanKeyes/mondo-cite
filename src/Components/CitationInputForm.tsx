@@ -131,94 +131,92 @@ export default function CitationInputForm() {
 
   return (
     <>
-      <Container size="sm">
-        <Paper withBorder p={isMobile ? 'md' : 'xl'} mt={60}>
-          <Tabs defaultValue="manual">
-            <Tabs.List>
-              <Tabs.Tab value="manual">Manual Entry</Tabs.Tab>
-              <Tabs.Tab value="doi">Add by DOI</Tabs.Tab>
-            </Tabs.List>
+      <Paper withBorder={!isMobile} p={{ base: 'md', sm: 'xl' }} mt="lg">
+        <Tabs defaultValue="manual">
+          <Tabs.List>
+            <Tabs.Tab value="manual">Manual Entry</Tabs.Tab>
+            <Tabs.Tab value="doi">Add by DOI</Tabs.Tab>
+          </Tabs.List>
 
-            <Tabs.Panel value="doi" pt="xs">
-              <form onSubmit={form.onSubmit(handleDoiSubmit)}>
-                <Stack>
-                  <TextInput
-                    required
-                    label="DOI"
-                    placeholder="10.1000/example.123"
-                    {...form.getInputProps('doi')}
-                  />
-                </Stack>
-                <Center mt="xl">
-                  <Button type="submit" variant="outline" loading={isLoading}>
-                    Look up DOI
-                  </Button>
-                </Center>
-              </form>
-            </Tabs.Panel>
+          <Tabs.Panel value="doi" pt="xs">
+            <form onSubmit={form.onSubmit(handleDoiSubmit)}>
+              <Stack>
+                <TextInput
+                  required
+                  label="DOI"
+                  placeholder="10.1000/example.123"
+                  {...form.getInputProps('doi')}
+                />
+              </Stack>
+              <Center mt="xl">
+                <Button type="submit" variant="outline" loading={isLoading}>
+                  Look up DOI
+                </Button>
+              </Center>
+            </form>
+          </Tabs.Panel>
 
-            <Tabs.Panel value="manual" pt="xs">
-              <form onSubmit={form.onSubmit(handleManualSubmit)}>
-                <Stack>
+          <Tabs.Panel value="manual" pt="xs">
+            <form onSubmit={form.onSubmit(handleManualSubmit)}>
+              <Stack>
+                <TextInput
+                  required
+                  label="Title"
+                  placeholder="Paper title"
+                  {...form.getInputProps('title')}
+                />
+                <TextInput
+                  required
+                  label="Authors"
+                  placeholder="Author names (separated by commas)"
+                  {...form.getInputProps('authors')}
+                />
+                <Group grow>
                   <TextInput
-                    required
-                    label="Title"
-                    placeholder="Paper title"
-                    {...form.getInputProps('title')}
+                    label="Journal"
+                    placeholder="Journal name"
+                    {...form.getInputProps('journal')}
                   />
                   <TextInput
-                    required
-                    label="Authors"
-                    placeholder="Author names (separated by commas)"
-                    {...form.getInputProps('authors')}
+                    label="Year"
+                    placeholder="YYYY"
+                    {...form.getInputProps('year')}
                   />
-                  <Group grow>
-                    <TextInput
-                      label="Journal"
-                      placeholder="Journal name"
-                      {...form.getInputProps('journal')}
-                    />
-                    <TextInput
-                      label="Year"
-                      placeholder="YYYY"
-                      {...form.getInputProps('year')}
-                    />
-                  </Group>
-                  <Group grow>
-                    <TextInput
-                      label="Volume"
-                      placeholder="Volume number"
-                      {...form.getInputProps('volume')}
-                    />
-                    <TextInput
-                      label="Issue"
-                      placeholder="Issue number"
-                      {...form.getInputProps('issue')}
-                    />
-                    <TextInput
-                      label="Pages"
-                      placeholder="e.g., 123-145"
-                      {...form.getInputProps('pages')}
-                    />
-                  </Group>
-                </Stack>
-                <Center mt="xl">
-                  <Button variant="outline" type="submit">
-                    Save Citation
-                  </Button>
-                </Center>
-              </form>
-            </Tabs.Panel>
-          </Tabs>
-        </Paper>
-        <PreviewDrawer
-          opened={previewOpen}
-          onClose={() => setPreviewOpen(false)}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          citation={form.values}
-        />
-      </Container>
+                </Group>
+                <Group grow>
+                  <TextInput
+                    label="Volume"
+                    placeholder="Volume number"
+                    {...form.getInputProps('volume')}
+                  />
+                  <TextInput
+                    label="Issue"
+                    placeholder="Issue number"
+                    {...form.getInputProps('issue')}
+                  />
+                  <TextInput
+                    label="Pages"
+                    placeholder="e.g., 123-145"
+                    {...form.getInputProps('pages')}
+                  />
+                </Group>
+              </Stack>
+              <Center mt="xl">
+                <Button variant="outline" type="submit">
+                  Save Citation
+                </Button>
+              </Center>
+            </form>
+          </Tabs.Panel>
+        </Tabs>
+      </Paper>
+      <PreviewDrawer
+        opened={previewOpen}
+        onClose={() => setPreviewOpen(false)}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        citation={form.values}
+      />
     </>
   )
 }
