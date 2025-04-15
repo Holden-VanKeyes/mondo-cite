@@ -133,12 +133,12 @@ export default function Dashboard() {
     <Container size="xl" py="xs">
       {/* Welcome Header */}
       <Grid mb="lg" align="flex-end">
-        <Grid.Col span={{ base: 12, md: 8 }}>
+        <Grid.Col span={{ base: 12, sm: 8 }}>
           <Title order={2}>Welcome to Your Library</Title>
           <Text c="dimmed">Manage, organize, and format your citations</Text>
         </Grid.Col>
         {citations.length > 0 && (
-          <Grid.Col span={4}>
+          <Grid.Col span={{ base: 0, sm: 4 }}>
             <Group justify="right">
               <Button
                 leftSection={<Plus size={16} />}
