@@ -101,11 +101,24 @@ export default function Dashboard() {
 
       try {
         // Simulate API latency
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+        const response = await fetch('/api/citations', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        if (!response.ok) {
+          throw new Error('Failed to fetch citations')
+        }
+        const data = await response.json()
+        setCitations(data)
+        // setCitations(sampleCitations)
+
+        // await new Promise((resolve) => setTimeout(resolve, 1000))
 
         // For testing, you can switch between these two to see different states
         // setCitations(emptyCitations)
-        setCitations(sampleCitations)
+        // setCitations(sampleCitations)
       } catch (error) {
         console.error('Error fetching citations:', error)
       } finally {

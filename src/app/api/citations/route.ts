@@ -36,9 +36,40 @@ export async function GET() {
     .groupBy('citations.id')
     .orderBy('citations.created_at', 'desc')
 
-  console.log('CITE', citations)
-
   return NextResponse.json(citations)
+}
+
+export async function PUT(request: Request) {
+  try {
+    const data = await request.json()
+
+    const citationId = data.id
+    const currentCitation = await db('citations')
+      .where('id', citationId)
+      .first()
+
+    const [updatedCitation] = await db('citations')
+      .where('id', citationId)
+      .update({
+        isFavorite: !currentCitation.isFavorite,
+        updated_at: new Date(),
+      })
+      .returning('*')
+
+    return Response.json({
+      success: true,
+      message: `Citation ${
+        updatedCitation.isFavorite ? 'added to' : 'removed from'
+      } favorites`,
+      citation: updatedCitation,
+    })
+  } catch (error) {
+    console.error('Error updating citation:', error)
+    return NextResponse.json(
+      { error: 'Failed to update citation' },
+      { status: 500 }
+    )
+  }
 }
 
 export async function POST(request: Request) {
@@ -94,19 +125,30 @@ export async function POST(request: Request) {
         const lastName = lastNameParts.join(' ')
 
         // Insert or find author
-        const [author] = await trx('authors')
-          .insert({
+        let authorExists = await trx('authors')
+          .where({
             first_name: firstName,
             last_name: lastName,
           })
-          .onConflict(['first_name', 'last_name'])
-          .merge()
-          .returning('id')
+          .first()
+
+        if (!authorExists) {
+          const [newAuthor] = await trx('authors')
+            .insert({
+              first_name: firstName,
+              last_name: lastName,
+            })
+            // .onConflict(['first_name', 'last_name'])
+            // .merge()
+            .returning('id')
+          authorExists = newAuthor
+        }
+        const authorId = authorExists.id
 
         // Create citation-author relationship
         await trx('citation_authors').insert({
           citation_id: citation.id,
-          author_id: author.id,
+          author_id: authorId,
         })
       }
 
