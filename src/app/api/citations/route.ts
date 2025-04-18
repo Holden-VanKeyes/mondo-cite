@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 // import { getServerSession } from 'next-auth'
 import db from '../../../db'
 // import { authOptions } from '@/lib/auth'
-console.log('API ROUTE HIT') // Add this
+import { mapDbCitationToModel } from '../../utils/mappers/citationMapper'
 
 export async function GET() {
   // const session = await getServerSession(authOptions)
@@ -35,8 +35,11 @@ export async function GET() {
     // .where('citations.user_id', session.user.id)
     .groupBy('citations.id')
     .orderBy('citations.created_at', 'desc')
+  const mappedCitations = citations.map((citation) =>
+    mapDbCitationToModel(citation, citation.authors || [])
+  )
 
-  return NextResponse.json(citations)
+  return NextResponse.json(mappedCitations)
 }
 
 export async function PUT(request: Request) {

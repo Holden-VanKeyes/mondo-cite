@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   Container,
   Grid,
@@ -22,26 +22,27 @@ import EmptyState from './dashboardComponents/EmptyState'
 import ListView from './dashboardComponents/ListView'
 import CitationCard from './dashboardComponents/CitationCard'
 import CitationInputForm from './CitationInputForm'
+import type { Citation } from '@/types'
 
 // Sample empty citation data structure
-interface Author {
-  firstName: string
-  lastName: string
-}
+// interface Author {
+//   firstName: string
+//   lastName: string
+// }
 
-interface Citation {
-  id: number
-  title: string
-  authors: Author[]
-  year: number
-  source: string
-  doi: string
-  type: string
-  createdAt: string
-  favorite: boolean
-}
+// interface Citation {
+//   id: number
+//   title: string
+//   authors: Author[]
+//   year: number
+//   source: string
+//   doi: string
+//   type: string
+//   created_at: string
+//   isFavorite: boolean
+// }
 
-const emptyCitations: Citation[] = []
+// const emptyCitations: Citation[] = []
 
 const sampleCitations = [
   {
@@ -94,40 +95,37 @@ export default function Dashboard() {
   const [drawerOpened, setDrawerOpened] = useState(false)
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`)
 
-  useEffect(() => {
-    // This would be replaced with a real API call
-    const fetchCitations = async () => {
-      setIsLoading(true)
+  const fetchCitations = useCallback(async () => {
+    setIsLoading(true)
 
-      try {
-        // Simulate API latency
-        const response = await fetch('/api/citations', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        if (!response.ok) {
-          throw new Error('Failed to fetch citations')
-        }
-        const data = await response.json()
-        setCitations(data)
-        // setCitations(sampleCitations)
-
-        // await new Promise((resolve) => setTimeout(resolve, 1000))
-
-        // For testing, you can switch between these two to see different states
-        // setCitations(emptyCitations)
-        // setCitations(sampleCitations)
-      } catch (error) {
-        console.error('Error fetching citations:', error)
-      } finally {
-        setIsLoading(false)
+    try {
+      const response = await fetch('/api/citations', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (!response.ok) {
+        throw new Error('Failed to fetch citations')
       }
+      const data = await response.json()
+      setCitations(data)
+    } catch (error) {
+      console.error('Error fetching citations:', error)
+    } finally {
+      setIsLoading(false)
     }
-
-    fetchCitations()
   }, [])
+
+  // Initial fetch
+  useEffect(() => {
+    fetchCitations()
+  }, [fetchCitations])
+
+  // This function will be called after successful save
+  const handleCitationAdded = () => {
+    fetchCitations() // Refresh the citations list
+  }
 
   // Filter citations based on search query
   const filteredCitations = citations.filter(
@@ -263,7 +261,7 @@ export default function Dashboard() {
         size="xl"
         position="left"
       >
-        <CitationInputForm />
+        <CitationInputForm onCitationAdded={handleCitationAdded} />
       </Drawer>
     </Container>
   )

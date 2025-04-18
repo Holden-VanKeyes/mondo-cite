@@ -17,7 +17,11 @@ import { notifications } from '@mantine/notifications'
 import { PreviewDrawer } from './PreviewDrawer'
 import { useMediaQuery } from '@mantine/hooks'
 
-export default function CitationInputForm() {
+export default function CitationInputForm({
+  onCitationAdded,
+}: {
+  onCitationAdded: () => void
+}) {
   const [isLoading, setIsLoading] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
   const theme = useMantineTheme()
@@ -109,6 +113,7 @@ export default function CitationInputForm() {
           message: 'Citation saved to your library',
           color: 'green',
         })
+        onCitationAdded()
         form.reset()
       }
 

@@ -1,5 +1,14 @@
 import React, { useState } from 'react'
-import { Card, Text, Group, ActionIcon, Badge, Menu, Box } from '@mantine/core'
+import {
+  Card,
+  Text,
+  Group,
+  ActionIcon,
+  Badge,
+  Menu,
+  Box,
+  Spoiler,
+} from '@mantine/core'
 import {
   Bookmark,
   ChevronDown,
@@ -12,23 +21,24 @@ import {
 } from 'tabler-icons-react'
 import css from './CitationCard.module.css'
 import { notifications } from '@mantine/notifications'
+import type { Citation } from '@/types'
 
-interface Author {
-  firstName: string
-  lastName: string
-}
+// interface Author {
+//   firstName: string
+//   lastName: string
+// }
 
-interface Citation {
-  id: number
-  title: string
-  authors: Author[]
-  year: number
-  source: string
-  doi: string
-  type: string
-  createdAt: string
-  isFavorite: boolean
-}
+// interface Citation {
+//   id: number
+//   title: string
+//   authors: Author[]
+//   year: number
+//   source: string
+//   doi: string
+//   type: string
+//   created_at: string
+//   isFavorite: boolean
+// }
 
 export default function CitationCard(citation: Citation) {
   const [localFavorite, setLocalFavorite] = useState(citation.isFavorite)
@@ -72,11 +82,14 @@ export default function CitationCard(citation: Citation) {
       <Text fz="lg" fw={500} mt="md">
         {citation.title}
       </Text>
-
+      <Spoiler maxHeight={120} showLabel="Show more" hideLabel="Hide">
+        <Text size="sm" c="dimmed">
+          {citation.authors
+            .map((a) => `${a.lastName}, ${a.firstName.charAt(0)}.`)
+            .join(', ')}
+        </Text>
+      </Spoiler>
       <Text size="sm" c="dimmed">
-        {citation.authors
-          .map((a) => `${a.lastName}, ${a.firstName.charAt(0)}.`)
-          .join(', ')}{' '}
         ({citation.year})
       </Text>
 
@@ -87,7 +100,7 @@ export default function CitationCard(citation: Citation) {
       <Box py="sm" px="xs" className={css.cardFooter}>
         <Group justify="space-between" mt="xs">
           <Text size="xs" c="dimmed">
-            Added: {new Date(citation.createdAt).toLocaleDateString()}
+            Added: {new Date(citation.created_at).toLocaleDateString()}
           </Text>
           <Group>
             <ActionIcon>
