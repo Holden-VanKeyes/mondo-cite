@@ -20,10 +20,7 @@ import {
   List,
   ThemeIcon,
   Divider,
-  Badge,
-  Transition,
   Box,
-  Flex,
 } from '@mantine/core'
 import {
   Check,
