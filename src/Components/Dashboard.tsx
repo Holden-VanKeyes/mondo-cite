@@ -87,10 +87,21 @@ const sampleCitations = [
 ]
 
 export default function Dashboard() {
-  // State for storing citations (we'd fetch this from the API in a real implementation)
+  const [defaultCitation, setDefaultCitation] = useState({
+    id: '',
+    doi: '',
+    title: '',
+    authors: '',
+    journal: '',
+    year: '',
+    volume: '',
+    issue: '',
+    pages: '',
+  })
   const [citations, setCitations] = useState<Citation[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
+  const [formMode, setFormMode] = useState('add') // 'add' or 'edit'
   const [searchQuery, setSearchQuery] = useState('')
   const [drawerOpened, setDrawerOpened] = useState(false)
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`)
@@ -124,6 +135,7 @@ export default function Dashboard() {
 
   // This function will be called after successful save
   const handleDashboardRefresh = () => {
+    setDrawerOpened(false)
     fetchCitations() // Refresh the citations list
   }
 
@@ -137,7 +149,27 @@ export default function Dashboard() {
           .includes(searchQuery.toLowerCase())
       )
   )
-  const handleDrawer = () => {
+  const handleDrawer = (citation?: Citation, mode?: string) => {
+    if (mode) {
+      setFormMode(mode)
+    }
+
+    if (citation) {
+      console.log('CITE', citation)
+      setDefaultCitation({
+        id: citation.id || '',
+        doi: citation.doi || '',
+        title: citation.title || '',
+        authors: citation.authors
+          .map((author) => `${author.firstName} ${author.lastName}`)
+          .join(', '),
+        journal: citation.journal || '',
+        year: citation.year.toString() || '',
+        volume: citation.volume || '',
+        issue: citation.issue || '',
+        pages: citation.pages || '',
+      })
+    }
     setDrawerOpened((prev) => !prev)
   }
   return (
@@ -154,7 +186,10 @@ export default function Dashboard() {
               <Button
                 leftSection={<Plus size={16} />}
                 variant="filled"
-                onClick={handleDrawer}
+                onClick={() => {
+                  setFormMode('add')
+                  handleDrawer()
+                }}
               >
                 New Citation
               </Button>
@@ -242,11 +277,14 @@ export default function Dashboard() {
                   key={citation.id}
                   {...citation}
                   dashboardRefresh={handleDashboardRefresh}
+                  handleDrawer={handleDrawer}
                 />
               ))}
             </SimpleGrid>
           ) : (
-            <ListView dashboardRefresh={handleDashboardRefresh} />
+            //TODO - Implement ListView same as CitationCard
+            <div>Future List view</div>
+            // <ListView dashboardRefresh={handleDashboardRefresh} />
           )}
 
           {/* Stats Footer */}
@@ -260,12 +298,16 @@ export default function Dashboard() {
       <Drawer
         opened={drawerOpened}
         onClose={() => setDrawerOpened(false)}
-        title="Add Citation"
+        title={formMode === 'add' ? 'Add Citation' : 'Edit Citation'}
         padding={isMobile ? 'md' : 'xl'}
         size="xl"
         position="left"
       >
-        <CitationInputForm dashboardRefresh={handleDashboardRefresh} />
+        <CitationInputForm
+          dashboardRefresh={handleDashboardRefresh}
+          formMode={formMode}
+          defaultCitation={defaultCitation}
+        />
       </Drawer>
     </Container>
   )

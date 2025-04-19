@@ -42,28 +42,131 @@ export async function GET() {
   return NextResponse.json(mappedCitations)
 }
 
-export async function PUT(request: Request) {
+export async function PATCH(request: Request) {
   try {
     const data = await request.json()
-
     const citationId = data.id
+
+    // Fetch the current citation
     const currentCitation = await db('citations')
       .where('id', citationId)
       .first()
 
-    const [updatedCitation] = await db('citations')
+    // Start a transaction to handle potential author updates
+    await db.transaction(async (trx) => {
+      let updateData = {}
+
+      // Check if this is a favorite toggle or a general update
+      if (
+        data.hasOwnProperty('toggleFavorite') &&
+        data.toggleFavorite === true
+      ) {
+        // This is a favorite toggle operation
+        updateData = {
+          isFavorite: !currentCitation.isFavorite,
+          updated_at: new Date(),
+        }
+
+        // Update the citation only
+        await trx('citations').where('id', citationId).update(updateData)
+      } else {
+        // This is a general update operation
+        // Extract citation fields (excluding authors which need special handling)
+        const {
+          title,
+          journal,
+          year,
+          volume,
+          issue,
+          pages,
+          doi,
+          url,
+          publisher,
+          abstract,
+          authors,
+        } = data.data
+
+        updateData = {
+          ...(title !== undefined && { title }),
+          ...(journal !== undefined && { journal }),
+          ...(year !== undefined && { year }),
+          ...(volume !== undefined && { volume }),
+          ...(issue !== undefined && { issue }),
+          ...(pages !== undefined && { pages }),
+          ...(doi !== undefined && { doi }),
+          ...(url !== undefined && { url }),
+          ...(publisher !== undefined && { publisher }),
+          ...(abstract !== undefined && { abstract }),
+          updated_at: new Date(),
+        }
+
+        // Update the citation
+        await trx('citations').where('id', citationId).update(updateData)
+
+        // Handle authors if they were provided
+        if (authors && Array.isArray(authors)) {
+          // Remove existing author relationships
+          await trx('citation_authors')
+            .where('citation_id', citationId)
+            .delete()
+
+          // Create new author entries or use existing ones
+          for (const authorName of authors) {
+            // Check if author already exists
+            const { first_name, last_name } = authorName
+
+            let authorRecord = await trx('authors')
+              .where({
+                first_name: first_name,
+                last_name: last_name,
+              })
+              .first()
+
+            // If not, create the author
+            if (!authorRecord) {
+              ;[authorRecord] = await trx('authors')
+                .insert({
+                  first_name: first_name,
+                  last_name: last_name,
+                })
+                .returning('*')
+            }
+
+            // Create the relationship
+            await trx('citation_authors').insert({
+              citation_id: citationId,
+              author_id: authorRecord.id,
+              // You might want to add an order field here if author order matters
+            })
+          }
+        }
+      }
+    })
+
+    // Fetch the updated citation with its authors to return
+    const updatedCitation = await db('citations')
       .where('id', citationId)
-      .update({
-        isFavorite: !currentCitation.isFavorite,
-        updated_at: new Date(),
-      })
-      .returning('*')
+      .first()
+
+    // Fetch authors separately and attach them
+    const authors = await db('authors')
+      .join('citation_authors', 'authors.id', 'citation_authors.author_id')
+      .where('citation_authors.citation_id', citationId)
+      .select('authors.first_name', 'authors.last_name')
+      .orderBy('authors.id') // Assuming you have an order field or ID to maintain order
+
+    updatedCitation.authors = authors.map((author) => ({
+      first_name: author.first_name,
+      last_name: author.last_name,
+    }))
 
     return Response.json({
       success: true,
-      message: `Citation ${
-        updatedCitation.isFavorite ? 'added to' : 'removed from'
-      } favorites`,
+      message: data.hasOwnProperty('toggleFavorite')
+        ? `Citation ${
+            updatedCitation.isFavorite ? 'added to' : 'removed from'
+          } favorites`
+        : 'Citation updated successfully',
       citation: updatedCitation,
     })
   } catch (error) {

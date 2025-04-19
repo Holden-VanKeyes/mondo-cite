@@ -11,16 +11,33 @@ import {
   Container,
   Center,
   useMantineTheme,
+  Textarea,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { PreviewDrawer } from './PreviewDrawer'
 import { useMediaQuery } from '@mantine/hooks'
 
+interface DefaultCitationProps {
+  id: string
+  doi: string
+  title: string
+  authors: string
+  journal: string
+  year: string
+  volume: string
+  issue: string
+  pages: string
+}
+
 export default function CitationInputForm({
   dashboardRefresh,
+  formMode,
+  defaultCitation,
 }: {
   dashboardRefresh: () => void
+  formMode: string
+  defaultCitation: DefaultCitationProps
 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -29,14 +46,7 @@ export default function CitationInputForm({
 
   const form = useForm({
     initialValues: {
-      doi: '',
-      title: '',
-      authors: '',
-      journal: '',
-      year: '',
-      volume: '',
-      issue: '',
-      pages: '',
+      ...defaultCitation,
     },
     validate: {
       doi: (value) =>
@@ -89,16 +99,28 @@ export default function CitationInputForm({
 
   const handleManualSubmit = async (values: typeof form.values) => {
     try {
-      const response = await fetch('/api/citations', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-      })
+      let response
+      if (formMode === 'edit') {
+        // PATCH request for editing
+        response = await fetch(`/api/citations/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ id: values.id, data: values }),
+        })
+      } else {
+        // POST request for adding new citation
+        response = await fetch('/api/citations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        })
+      }
 
-      //   if (!response.ok) throw new Error('Failed to save citation')
-      const data = await response.json()
+      // const data = await response.json()
       if (response.status === 409) {
         notifications.show({
           title: 'Citation Already Exists',
@@ -125,6 +147,7 @@ export default function CitationInputForm({
 
   const handleSave = () => {
     // Save citation to database
+
     handleManualSubmit(form.values)
     setPreviewOpen(false)
   }
@@ -137,10 +160,12 @@ export default function CitationInputForm({
   return (
     <>
       <Paper withBorder={!isMobile} p={{ base: 'md', sm: 'xl' }} mt="lg">
-        <Tabs defaultValue="doi">
+        <Tabs defaultValue={formMode === 'add' ? 'doi' : 'manual'}>
           <Tabs.List>
-            <Tabs.Tab value="doi">Add by DOI</Tabs.Tab>
-            <Tabs.Tab value="manual">Manual Entry</Tabs.Tab>
+            {formMode === 'add' && <Tabs.Tab value="doi">Add by DOI</Tabs.Tab>}
+            <Tabs.Tab value="manual">
+              {formMode === 'add' ? 'Manual Entry' : 'Edit Citation'}
+            </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="doi" pt="xs">
@@ -170,7 +195,7 @@ export default function CitationInputForm({
                   placeholder="Paper title"
                   {...form.getInputProps('title')}
                 />
-                <TextInput
+                <Textarea
                   required
                   label="Authors"
                   placeholder="Author names (separated by commas)"
@@ -208,7 +233,7 @@ export default function CitationInputForm({
               </Stack>
               <Center mt="xl">
                 <Button variant="outline" type="submit">
-                  Save Citation
+                  {formMode === 'edit' ? 'Update Citation' : 'Add Citation'}
                 </Button>
               </Center>
             </form>

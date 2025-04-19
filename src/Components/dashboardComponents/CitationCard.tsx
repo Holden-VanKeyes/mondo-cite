@@ -28,17 +28,18 @@ import type { Citation } from '@/types'
 export default function CitationCard(
   props: Citation & {
     dashboardRefresh: () => void
+    handleDrawer: (citation: Citation, edit?: string) => void
   }
 ) {
-  const { dashboardRefresh, ...citation } = props
+  const { dashboardRefresh, handleDrawer, ...citation } = props
 
   const [localFavorite, setLocalFavorite] = useState(citation.isFavorite)
   const favoriteToggle = () => {
     setLocalFavorite((prev) => !prev)
     try {
       fetch(`/api/citations`, {
-        method: 'PUT',
-        body: JSON.stringify({ id: citation.id }),
+        method: 'PATCH',
+        body: JSON.stringify({ id: citation.id, toggleFavorite: true }),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -124,10 +125,22 @@ export default function CitationCard(
           <Text size="xs" c="dimmed">
             Added: {new Date(citation.created_at).toLocaleDateString()}
           </Text>
+          {new Date(citation.updated_at).toDateString() !==
+            new Date(citation.created_at).toDateString() && (
+            <Text size="xs" c="dimmed">
+              Updated: {new Date(citation.updated_at).toLocaleDateString()}
+            </Text>
+          )}
           <Group>
-            <ActionIcon variant="outline">
+            <ActionIcon
+              variant="outline"
+              onClick={() => {
+                handleDrawer(citation, 'edit')
+              }}
+            >
               <Edit size={16} />
             </ActionIcon>
+
             <ActionIcon variant="outline">
               <Share size={16} />
             </ActionIcon>
@@ -137,9 +150,11 @@ export default function CitationCard(
             <ActionIcon variant="outline">
               <Download size={14} />
             </ActionIcon>
+
             <ActionIcon variant="outline">
               <FolderPlus size={14} />
             </ActionIcon>
+
             <Menu shadow="md" width={200}>
               <Menu.Target>
                 <ActionIcon variant="outline" color="red">
