@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 
 import { Header } from '@/Components/Header'
 import LandingPage from '@/Components/LandingPage'
@@ -33,7 +33,9 @@ export default function Home() {
   if ((status === 'loading' || isLoading) && initialLoadRef.current) {
     return (
       <>
-        <Header />
+        <Suspense fallback={null}>
+          <Header />
+        </Suspense>
         <LoadingOverlay
           visible={true}
           zIndex={1000}
@@ -46,8 +48,16 @@ export default function Home() {
 
   return (
     <>
-      {/* <Header /> */}
-      {session ? <Dashboard /> : <LandingPage />}
+      {/* <Suspense fallback={null}>
+        <Header />
+      </Suspense> */}
+      {session ? (
+        <Dashboard />
+      ) : (
+        <Suspense fallback={null}>
+          <LandingPage />
+        </Suspense>
+      )}
     </>
   )
 }
