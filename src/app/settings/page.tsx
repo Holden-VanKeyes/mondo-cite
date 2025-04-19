@@ -4,7 +4,7 @@ import React from 'react'
 export default function page() {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <h1>SETTINGS</h1>
     </>
   )
