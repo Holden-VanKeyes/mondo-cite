@@ -18,9 +18,9 @@ import { PreviewDrawer } from './PreviewDrawer'
 import { useMediaQuery } from '@mantine/hooks'
 
 export default function CitationInputForm({
-  onCitationAdded,
+  dashboardRefresh,
 }: {
-  onCitationAdded: () => void
+  dashboardRefresh: () => void
 }) {
   const [isLoading, setIsLoading] = useState(false)
   const [previewOpen, setPreviewOpen] = useState(false)
@@ -113,7 +113,7 @@ export default function CitationInputForm({
           message: 'Citation saved to your library',
           color: 'green',
         })
-        onCitationAdded()
+        dashboardRefresh()
         form.reset()
       }
 
@@ -137,10 +137,10 @@ export default function CitationInputForm({
   return (
     <>
       <Paper withBorder={!isMobile} p={{ base: 'md', sm: 'xl' }} mt="lg">
-        <Tabs defaultValue="manual">
+        <Tabs defaultValue="doi">
           <Tabs.List>
-            <Tabs.Tab value="manual">Manual Entry</Tabs.Tab>
             <Tabs.Tab value="doi">Add by DOI</Tabs.Tab>
+            <Tabs.Tab value="manual">Manual Entry</Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="doi" pt="xs">

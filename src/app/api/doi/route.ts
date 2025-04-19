@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const response = await fetch(url, {
       headers: {
         // Add your email for better support from CrossRef
-        'User-Agent': 'MondoCite (mailto:your-email@example.com)',
+        'User-Agent': 'MondoCite (mailto:nostalgicadmin@gmail.com)',
       },
     })
 

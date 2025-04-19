@@ -8,11 +8,12 @@ import {
   Menu,
   Box,
   Spoiler,
+  Stack,
 } from '@mantine/core'
 import {
   Bookmark,
   ChevronDown,
-  Clipboard,
+  HandStop,
   Download,
   Edit,
   FolderPlus,
@@ -21,26 +22,16 @@ import {
 } from 'tabler-icons-react'
 import css from './CitationCard.module.css'
 import { notifications } from '@mantine/notifications'
+import CopyCitation from './CopyCitation'
 import type { Citation } from '@/types'
 
-// interface Author {
-//   firstName: string
-//   lastName: string
-// }
+export default function CitationCard(
+  props: Citation & {
+    dashboardRefresh: () => void
+  }
+) {
+  const { dashboardRefresh, ...citation } = props
 
-// interface Citation {
-//   id: number
-//   title: string
-//   authors: Author[]
-//   year: number
-//   source: string
-//   doi: string
-//   type: string
-//   created_at: string
-//   isFavorite: boolean
-// }
-
-export default function CitationCard(citation: Citation) {
   const [localFavorite, setLocalFavorite] = useState(citation.isFavorite)
   const favoriteToggle = () => {
     setLocalFavorite((prev) => !prev)
@@ -63,6 +54,37 @@ export default function CitationCard(citation: Citation) {
       })
     }
   }
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/citations`, {
+        method: 'DELETE',
+        body: JSON.stringify({ id: citation.id }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete citation')
+      }
+
+      notifications.show({
+        title: 'Success',
+        message: 'Citation deleted successfully',
+        color: 'green',
+      })
+      dashboardRefresh()
+    } catch (error) {
+      console.error('Error deleting citation:', error)
+      notifications.show({
+        title: 'Error',
+        message: "Couldn't delete citation.",
+        color: 'red',
+      })
+    }
+  }
+
   return (
     <Card
       key={citation.id}
@@ -77,7 +99,7 @@ export default function CitationCard(citation: Citation) {
           <Bookmark size={18} onClick={favoriteToggle} />
         </ActionIcon>
         {/* TODO - Make different color badges for different citation types */}
-        <Badge>{citation.type}</Badge>
+        {citation.type ? <Badge>{citation.type}</Badge> : null}
       </Group>
       <Text fz="lg" fw={500} mt="md">
         {citation.title}
@@ -103,31 +125,34 @@ export default function CitationCard(citation: Citation) {
             Added: {new Date(citation.created_at).toLocaleDateString()}
           </Text>
           <Group>
-            <ActionIcon>
+            <ActionIcon variant="outline">
               <Edit size={16} />
             </ActionIcon>
-            <ActionIcon>
+            <ActionIcon variant="outline">
               <Share size={16} />
             </ActionIcon>
-            <Menu position="bottom-end" shadow="md">
+
+            <CopyCitation citation={citation} variant={'menu-item'} />
+
+            <ActionIcon variant="outline">
+              <Download size={14} />
+            </ActionIcon>
+            <ActionIcon variant="outline">
+              <FolderPlus size={14} />
+            </ActionIcon>
+            <Menu shadow="md" width={200}>
               <Menu.Target>
-                <ActionIcon>
-                  <ChevronDown size={16} />
+                <ActionIcon variant="outline" color="red">
+                  <Trash size={14} />
                 </ActionIcon>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item leftSection={<Clipboard size={14} />}>
-                  Copy formatted citation
-                </Menu.Item>
-                <Menu.Item leftSection={<Download size={14} />}>
-                  Download
-                </Menu.Item>
-                <Menu.Item leftSection={<FolderPlus size={14} />}>
-                  Add to collection
-                </Menu.Item>
-                <Menu.Divider />
-                <Menu.Item color="red" leftSection={<Trash size={14} />}>
-                  Delete
+                <Menu.Item
+                  color="red"
+                  leftSection={<HandStop size={14} />}
+                  onClick={handleDelete}
+                >
+                  Confirm delete
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>

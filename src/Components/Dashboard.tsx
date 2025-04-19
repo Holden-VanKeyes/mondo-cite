@@ -123,7 +123,7 @@ export default function Dashboard() {
   }, [fetchCitations])
 
   // This function will be called after successful save
-  const handleCitationAdded = () => {
+  const handleDashboardRefresh = () => {
     fetchCitations() // Refresh the citations list
   }
 
@@ -238,11 +238,15 @@ export default function Dashboard() {
               verticalSpacing={{ base: 'md', sm: 'lg' }}
             >
               {filteredCitations.map((citation) => (
-                <CitationCard key={citation.id} {...citation} />
+                <CitationCard
+                  key={citation.id}
+                  {...citation}
+                  dashboardRefresh={handleDashboardRefresh}
+                />
               ))}
             </SimpleGrid>
           ) : (
-            <ListView />
+            <ListView dashboardRefresh={handleDashboardRefresh} />
           )}
 
           {/* Stats Footer */}
@@ -261,7 +265,7 @@ export default function Dashboard() {
         size="xl"
         position="left"
       >
-        <CitationInputForm onCitationAdded={handleCitationAdded} />
+        <CitationInputForm dashboardRefresh={handleDashboardRefresh} />
       </Drawer>
     </Container>
   )

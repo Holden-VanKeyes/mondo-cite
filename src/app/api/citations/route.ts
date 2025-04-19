@@ -198,3 +198,22 @@ export async function POST(request: Request) {
     )
   }
 }
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json()
+
+    // Delete the citation and its relationships
+    await db.transaction(async (trx) => {
+      await trx('citation_authors').where('citation_id', id).del()
+      await trx('citations').where('id', id).del()
+    })
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('Error deleting citation:', error)
+    return NextResponse.json(
+      { error: 'Failed to delete citation' },
+      { status: 500 }
+    )
+  }
+}
