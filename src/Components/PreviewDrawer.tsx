@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Drawer,
   Stack,
@@ -11,7 +10,6 @@ import {
   Paper,
   ScrollArea,
   useMantineTheme,
-  rem,
 } from '@mantine/core'
 import { useMediaQuery } from '@mantine/hooks'
 

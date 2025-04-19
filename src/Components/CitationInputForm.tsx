@@ -8,7 +8,6 @@ import {
   Stack,
   Tabs,
   Paper,
-  Container,
   Center,
   useMantineTheme,
   Textarea,
@@ -17,6 +16,7 @@ import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { PreviewDrawer } from './PreviewDrawer'
 import { useMediaQuery } from '@mantine/hooks'
+import { Author } from '@/types'
 
 interface DefaultCitationProps {
   id: string
@@ -81,7 +81,7 @@ export default function CitationInputForm({
         ...form.values,
         title: citation.title,
         authors: citation.authors
-          .map((a) => `${a.firstName} ${a.lastName}`)
+          .map((a: Author) => `${a.firstName} ${a.lastName}`)
           .join(', '),
         journal: citation.journal,
         year: citation.year?.toString(),

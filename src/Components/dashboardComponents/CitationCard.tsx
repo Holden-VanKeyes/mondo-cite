@@ -8,11 +8,9 @@ import {
   Menu,
   Box,
   Spoiler,
-  Stack,
 } from '@mantine/core'
 import {
   Bookmark,
-  ChevronDown,
   HandStop,
   Download,
   Edit,

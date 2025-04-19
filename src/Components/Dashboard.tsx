@@ -24,67 +24,49 @@ import CitationCard from './dashboardComponents/CitationCard'
 import CitationInputForm from './CitationInputForm'
 import type { Citation } from '@/types'
 
-// Sample empty citation data structure
-// interface Author {
-//   firstName: string
-//   lastName: string
-// }
-
-// interface Citation {
-//   id: number
-//   title: string
-//   authors: Author[]
-//   year: number
-//   source: string
-//   doi: string
-//   type: string
-//   created_at: string
-//   isFavorite: boolean
-// }
-
 // const emptyCitations: Citation[] = []
 
-const sampleCitations = [
-  {
-    id: 1,
-    title: 'The impact of language diversity in citation practices',
-    authors: [
-      { firstName: 'Maria', lastName: 'García' },
-      { firstName: 'Jing', lastName: 'Li' },
-    ],
-    year: 2023,
-    source: 'Journal of Academic Publishing',
-    doi: '10.1000/xyz123',
-    type: 'journal',
-    createdAt: '2023-04-01',
-    favorite: true,
-  },
-  {
-    id: 2,
-    title: 'Non-English citation styles in academia: A comparative study',
-    authors: [{ firstName: 'Ahmed', lastName: 'Hassan' }],
-    year: 2022,
-    source: 'International Journal of Bibliography',
-    doi: '10.1000/abc456',
-    type: 'journal',
-    createdAt: '2023-03-28',
-    favorite: false,
-  },
-  {
-    id: 3,
-    title: 'Decolonizing academic citation standards',
-    authors: [
-      { firstName: 'Priya', lastName: 'Sharma' },
-      { firstName: 'Luis', lastName: 'Hernandez' },
-    ],
-    year: 2021,
-    source: 'Research Ethics Quarterly',
-    doi: '10.1000/def789',
-    type: 'journal',
-    createdAt: '2023-03-15',
-    favorite: false,
-  },
-]
+// const sampleCitations = [
+//   {
+//     id: 1,
+//     title: 'The impact of language diversity in citation practices',
+//     authors: [
+//       { firstName: 'Maria', lastName: 'García' },
+//       { firstName: 'Jing', lastName: 'Li' },
+//     ],
+//     year: 2023,
+//     source: 'Journal of Academic Publishing',
+//     doi: '10.1000/xyz123',
+//     type: 'journal',
+//     createdAt: '2023-04-01',
+//     favorite: true,
+//   },
+//   {
+//     id: 2,
+//     title: 'Non-English citation styles in academia: A comparative study',
+//     authors: [{ firstName: 'Ahmed', lastName: 'Hassan' }],
+//     year: 2022,
+//     source: 'International Journal of Bibliography',
+//     doi: '10.1000/abc456',
+//     type: 'journal',
+//     createdAt: '2023-03-28',
+//     favorite: false,
+//   },
+//   {
+//     id: 3,
+//     title: 'Decolonizing academic citation standards',
+//     authors: [
+//       { firstName: 'Priya', lastName: 'Sharma' },
+//       { firstName: 'Luis', lastName: 'Hernandez' },
+//     ],
+//     year: 2021,
+//     source: 'Research Ethics Quarterly',
+//     doi: '10.1000/def789',
+//     type: 'journal',
+//     createdAt: '2023-03-15',
+//     favorite: false,
+//   },
+// ]
 
 export default function Dashboard() {
   const [defaultCitation, setDefaultCitation] = useState({

@@ -1,5 +1,6 @@
 // src/app/api/doi/route.ts
 import { NextResponse } from 'next/server'
+import { Author } from '@/types'
 
 export async function POST(request: Request) {
   try {
@@ -25,10 +26,10 @@ export async function POST(request: Request) {
     const citation = {
       title: work.title[0],
       authors:
-        work.author?.map((author: any) => ({
-          firstName: author.given,
-          lastName: author.family,
-          affiliation: author.affiliation?.[0]?.name,
+        work.author?.map((author: Author) => ({
+          firstName: author.firstName,
+          lastName: author.lastName,
+          // affiliation: author.affiliation?.[0]?.name,
         })) || [],
       journal: work['container-title']?.[0],
       year: work.published?.['date-parts']?.[0]?.[0],
