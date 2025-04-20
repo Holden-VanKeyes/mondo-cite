@@ -37,14 +37,14 @@ const config: { [key: string]: Knex.Config } = {
   },
   production: {
     client: 'postgres', // Changed from 'postgresql' to 'pg'
-    // connection: process.env.DATABASE_URL, // Using the URL directly without the object
-    connection: {
-      connectionString: process.env.POSTGRES_URL,
-      ssl: {
-        ca: fs.readFileSync(getCertPath()).toString(),
-        // Remove rejectUnauthorized: false as we're now verifying with the proper cert
-      },
-    },
+    connection: process.env.DATABASE_URL,
+    //  connection: {
+    //     connectionString: process.env.POSTGRES_URL,
+    //     ssl: {
+    //       ca: fs.readFileSync(getCertPath()).toString(),
+    //       // Remove rejectUnauthorized: false as we're now verifying with the proper cert
+    //     },
+    //   },
     migrations: {
       tableName: 'knex_migrations',
       extension: 'ts',
