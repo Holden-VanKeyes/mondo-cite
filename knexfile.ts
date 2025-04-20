@@ -1,9 +1,20 @@
 // Update with your config settings.
+import fs from 'fs'
+import path from 'path'
 import { Knex } from 'knex'
 
 /**
  * @type { Object.<string, import("knex").Knex.Config> }
  */
+
+const getCertPath = () => {
+  // For local development
+  // if (process.env.NODE_ENV !== 'production') {
+  //   return path.join(__dirname, 'certs', 'prod-ca-2021.cer');
+  // }
+  // For Vercel production
+  return path.join(process.cwd(), 'certs', 'prod-ca-2021.crt')
+}
 
 console.log('KNEX FILE')
 const config: { [key: string]: Knex.Config } = {
@@ -30,7 +41,8 @@ const config: { [key: string]: Knex.Config } = {
     connection: {
       connectionString: process.env.POSTGRES_URL,
       ssl: {
-        rejectUnauthorized: false,
+        ca: fs.readFileSync(getCertPath()).toString(),
+        // Remove rejectUnauthorized: false as we're now verifying with the proper cert
       },
     },
     migrations: {
