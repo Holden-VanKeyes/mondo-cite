@@ -26,10 +26,7 @@ const config: { [key: string]: Knex.Config } = {
   },
   production: {
     client: 'postgresql',
-    connection: {
-      connectionString: process.env.POSTGRES_URL,
-      ssl: { rejectUnauthorized: false },
-    },
+    connection: process.env.POSTGRES_URL,
     pool: {
       min: 2,
       max: 10,
