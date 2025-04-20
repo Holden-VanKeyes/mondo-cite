@@ -26,13 +26,17 @@ const config: { [key: string]: Knex.Config } = {
   },
   production: {
     client: 'postgresql',
-    connection: process.env.POSTGRES_URL,
+    connection: {
+      connectionString: process.env.POSTGRES_URL,
+      ssl: { rejectUnauthorized: false },
+    },
     pool: {
       min: 2,
       max: 10,
     },
     migrations: {
       tableName: 'knex_migrations',
+      extension: 'ts',
       directory: './migrations',
     },
   },
