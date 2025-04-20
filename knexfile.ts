@@ -26,7 +26,7 @@ const config: { [key: string]: Knex.Config } = {
   },
   production: {
     client: 'pg', // Changed from 'postgresql' to 'pg'
-    connection: process.env.POSTGRES_URL, // Using the URL directly without the object
+    connection: process.env.DATABASE_URL, // Using the URL directly without the object
     migrations: {
       tableName: 'knex_migrations',
       extension: 'ts',
