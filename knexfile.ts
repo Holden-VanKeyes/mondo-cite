@@ -25,17 +25,14 @@ const config: { [key: string]: Knex.Config } = {
     },
   },
   production: {
-    client: 'postgresql',
-    connection: process.env.POSTGRES_URL_NON_POOLING,
-    pool: {
-      min: 2,
-      max: 10,
-    },
+    client: 'pg', // Changed from 'postgresql' to 'pg'
+    connection: process.env.POSTGRES_URL, // Using the URL directly without the object
     migrations: {
       tableName: 'knex_migrations',
       extension: 'ts',
       directory: './migrations',
     },
+    pool: { min: 0, max: 7 }, // Match your working pool settings
   },
 }
 
