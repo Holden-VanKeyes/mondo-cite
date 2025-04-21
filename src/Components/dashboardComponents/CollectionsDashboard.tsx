@@ -52,15 +52,15 @@ interface Collection {
 }
 
 const mockdata = [
-  { title: 'Credit cards', icon: Dots, color: 'violet' },
-  { title: 'Banks nearby', icon: Edit, color: 'indigo' },
-  { title: 'Transfers', icon: FolderPlus, color: 'blue' },
-  { title: 'Refunds', icon: Folder, color: 'green' },
-  { title: 'Receipts', icon: ChevronDown, color: 'teal' },
-  { title: 'Taxes', icon: ChevronUp, color: 'cyan' },
-  { title: 'Reports', icon: ReportMedical, color: 'pink' },
-  { title: 'Payments', icon: Flower, color: 'red' },
-  { title: 'Cashback', icon: Rocket, color: 'orange' },
+  { title: 'Test Cite', icon: Dots, color: 'a few words' },
+  { title: 'SciFi Cite', icon: Edit, color: 'anything at all' },
+  { title: 'City Cite', icon: FolderPlus, color: 'lorem ipsum' },
+  { title: 'Sight Cite', icon: Folder, color: 'famous science movies' },
+  { title: 'Cycle Cite', icon: ChevronDown, color: 'really?' },
+  { title: 'Anoter Fun Cite', icon: ChevronUp, color: 'medical text' },
+  // { title: 'Reports', icon: ReportMedical, color: 'pink' },
+  // { title: 'Payments', icon: Flower, color: 'red' },
+  // { title: 'Cashback', icon: Rocket, color: 'orange' },
 ]
 
 export default function CollectionsList() {
