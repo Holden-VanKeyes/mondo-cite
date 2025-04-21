@@ -1,6 +1,8 @@
 export interface Author {
   firstName: string
   lastName: string
+  given?: string
+  family?: string
   middleName?: string
   affiliation?: string
 }

@@ -67,9 +67,9 @@ export const config = {
       }
       return token
     },
-    async session({ session }) {
+    async session({ session, user }) {
       // Instead of user.id, we'll use token
-      console.log('hit session', session)
+      console.log('hit session', session, 'user', user)
       return session
     },
   },

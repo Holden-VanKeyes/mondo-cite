@@ -1,15 +1,14 @@
 import { NextResponse } from 'next/server'
-// import { getServerSession } from 'next-auth'
+import { auth } from '../../../auth'
 import db from '../../../db'
-// import { authOptions } from '@/lib/auth'
 import { mapDbCitationToModel } from '../../utils/mappers/citationMapper'
 
 export async function GET() {
-  // const session = await getServerSession(authOptions)
+  const session = await auth()
 
-  // if (!session) {
-  //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  // }
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
   const citations = await db('citations')
     .select(
@@ -32,7 +31,7 @@ export async function GET() {
       'citation_authors.citation_id'
     )
     .leftJoin('authors', 'citation_authors.author_id', 'authors.id')
-    // .where('citations.user_id', session.user.id)
+    .where('citations.user_id', session.user.id)
     .groupBy('citations.id')
     .orderBy('citations.created_at', 'desc')
   const mappedCitations = citations.map((citation) =>
@@ -44,6 +43,11 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   try {
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     const data = await request.json()
     const citationId = data.id
 
@@ -180,11 +184,18 @@ export async function PATCH(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const session = await auth()
+
+    if (!session?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     const data = await request.json()
+    const userId = session.user.id
+    console.log('USER', userId)
 
     if (data.doi) {
       const existingCitation = await db('citations')
-        .where('doi', data.doi)
+        .where({ doi: data.doi, user_id: userId })
         .first()
 
       if (existingCitation) {
@@ -215,6 +226,7 @@ export async function POST(request: Request) {
           doi: data.doi,
           url: data.url,
           abstract: data.abstract,
+          user_id: userId,
         })
         .returning('*')
 
@@ -303,6 +315,11 @@ export async function POST(request: Request) {
 }
 export async function DELETE(request: Request) {
   try {
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     const { id } = await request.json()
 
     // Delete the citation and its relationships

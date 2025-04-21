@@ -32,7 +32,7 @@ export function mapDbCitationToModel(
     type: dbCitation.type,
 
     // Map related data
-    authors: dbAuthors.map((author) => ({
+    authors: dbCitation.authors.map((author) => ({
       firstName: author.firstName,
       lastName: author.lastName,
     })),

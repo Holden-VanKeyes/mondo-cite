@@ -24,7 +24,7 @@ export default function EmptyState({ handleDrawer }: EmptyStateProps) {
         p={{ base: 'xs', sm: 'xl' }}
         mt={{ base: 0, sm: 'xl' }}
         radius="md"
-        withBorder={!isMobile}
+        // withBorder={!isMobile}
         style={{ maxWidth: 1000 }}
       >
         <Flex

@@ -27,8 +27,8 @@ export async function POST(request: Request) {
       title: work.title[0],
       authors:
         work.author?.map((author: Author) => ({
-          firstName: author.firstName,
-          lastName: author.lastName,
+          firstName: author.given,
+          lastName: author.family,
           // affiliation: author.affiliation?.[0]?.name,
         })) || [],
       journal: work['container-title']?.[0],

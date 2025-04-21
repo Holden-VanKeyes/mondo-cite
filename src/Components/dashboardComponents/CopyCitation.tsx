@@ -12,6 +12,7 @@ import {
   Stack,
   SegmentedControl,
   ScrollArea,
+  Tooltip,
 } from '@mantine/core'
 import { Clipboard } from 'tabler-icons-react'
 import { notifications } from '@mantine/notifications'
@@ -104,9 +105,11 @@ export default function CopyCitation({
   if (variant === 'menu-item') {
     return (
       <>
-        <ActionIcon onClick={open} variant="outline">
-          <Clipboard size={14} />
-        </ActionIcon>
+        <Tooltip label="copy">
+          <ActionIcon onClick={open} variant="outline">
+            <Clipboard size={14} />
+          </ActionIcon>
+        </Tooltip>
 
         <Modal
           opened={opened}

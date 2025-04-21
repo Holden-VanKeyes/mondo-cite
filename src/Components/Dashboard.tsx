@@ -23,6 +23,8 @@ import ListView from './dashboardComponents/ListView'
 import CitationCard from './dashboardComponents/CitationCard'
 import CitationInputForm from './CitationInputForm'
 import type { Citation } from '@/types'
+import CollectionsList from './dashboardComponents/CollectionsList'
+import CollectionsDashboard from './dashboardComponents/CollectionsDashboard'
 
 // const emptyCitations: Citation[] = []
 
@@ -84,6 +86,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
   const [formMode, setFormMode] = useState('add') // 'add' or 'edit'
+  const [activeTab, setActiveTab] = useState<string | null>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [drawerOpened, setDrawerOpened] = useState(false)
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`)
@@ -135,16 +138,16 @@ export default function Dashboard() {
     if (mode) {
       setFormMode(mode)
     }
-
-    if (citation) {
-      console.log('CITE', citation)
+    console.log('CITe', citation)
+    if (citation && mode === 'edit') {
       setDefaultCitation({
         id: citation.id || '',
         doi: citation.doi || '',
         title: citation.title || '',
-        authors: citation.authors
-          .map((author) => `${author.firstName} ${author.lastName}`)
-          .join(', '),
+        authors:
+          citation.authors
+            .map((author) => `${author.firstName} ${author.lastName}`)
+            .join(', ') || '',
         journal: citation.journal || '',
         year: citation.year.toString() || '',
         volume: citation.volume || '',
@@ -154,6 +157,7 @@ export default function Dashboard() {
     }
     setDrawerOpened((prev) => !prev)
   }
+  console.log('defaultCitation', defaultCitation)
   return (
     <Container size="xl" py="xs">
       {/* Welcome Header */}
@@ -181,116 +185,125 @@ export default function Dashboard() {
       </Grid>
 
       {/* Navigation Tabs */}
-      <Tabs defaultValue="all" mb="md">
+      <Tabs value={activeTab} onChange={setActiveTab}>
         <Tabs.List>
           <Tabs.Tab value="all">All Citations</Tabs.Tab>
-          <Tabs.Tab value="recents">Recents</Tabs.Tab>
           <Tabs.Tab value="collections">Collections</Tabs.Tab>
-          <Tabs.Tab value="favorites">Favorites</Tabs.Tab>
+          <Tabs.Tab value="shared" disabled>
+            Shared
+          </Tabs.Tab>
         </Tabs.List>
-      </Tabs>
 
-      {/* Search and Filter Bar */}
-      {citations.length > 0 && (
-        <Grid mb="md" align="center">
-          <Grid.Col span={6}>
-            <TextInput
-              leftSection={<Search size={18} />}
-              placeholder="Search by title, author, etc."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.currentTarget.value)}
-            />
-          </Grid.Col>
-          <Grid.Col span={4}>
-            <Button
-              variant="outline"
-              leftSection={<Filter size={18} />}
-              color="gray"
-            >
-              Filter
-            </Button>
-          </Grid.Col>
-          <Grid.Col span={2} visibleFrom="sm">
-            <Group justify="right">
-              <ActionIcon
-                variant={viewMode === 'grid' ? 'filled' : 'subtle'}
-                onClick={() => setViewMode('grid')}
+        {/* Search and Filter Bar */}
+        {citations.length > 0 && (
+          <Grid my="md" align="center">
+            <Grid.Col span={6}>
+              <TextInput
+                leftSection={<Search size={18} />}
+                placeholder="Search by title, author, etc."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.currentTarget.value)}
+              />
+            </Grid.Col>
+            <Grid.Col span={4}>
+              <Button
+                variant="outline"
+                leftSection={<Filter size={18} />}
+                color="gray"
               >
-                <GridDots size={18} />
-              </ActionIcon>
-              <ActionIcon
-                variant={viewMode === 'list' ? 'filled' : 'subtle'}
-                onClick={() => setViewMode('list')}
-              >
-                <List size={18} />
-              </ActionIcon>
-            </Group>
-          </Grid.Col>
-        </Grid>
-      )}
+                Filter
+              </Button>
+            </Grid.Col>
+            <Grid.Col span={2} visibleFrom="sm">
+              <Group justify="right">
+                <ActionIcon
+                  variant={viewMode === 'grid' ? 'filled' : 'subtle'}
+                  onClick={() => setViewMode('grid')}
+                >
+                  <GridDots size={18} />
+                </ActionIcon>
+                <ActionIcon
+                  variant={viewMode === 'list' ? 'filled' : 'subtle'}
+                  onClick={() => setViewMode('list')}
+                >
+                  <List size={18} />
+                </ActionIcon>
+              </Group>
+            </Grid.Col>
+          </Grid>
+        )}
 
-      {/* Citations Content */}
-      {isLoading ? (
-        <Center style={{ height: '50vh' }}>
-          <Text>Loading your citations...</Text>
-        </Center>
-      ) : citations.length === 0 ? (
-        <EmptyState handleDrawer={handleDrawer} />
-      ) : (
-        <>
-          {filteredCitations.length === 0 ? (
-            <Center style={{ height: '30vh' }}>
-              <Stack align="center" gap="md">
-                <Text size="xl">No citations found</Text>
-                <Text c="dimmed">Try adjusting your search or filters</Text>
-                <Button variant="subtle" onClick={() => setSearchQuery('')}>
-                  Clear Search
-                </Button>
-              </Stack>
+        {/* Citations Content */}
+        <Tabs.Panel value="all" pt="xs">
+          {isLoading ? (
+            <Center style={{ height: '50vh' }}>
+              <Text>Loading your citations...</Text>
             </Center>
-          ) : viewMode === 'grid' || isMobile ? (
-            <SimpleGrid
-              cols={{ base: 1, sm: 2, lg: 3 }}
-              spacing={{ base: 'md', sm: 'lg' }}
-              verticalSpacing={{ base: 'md', sm: 'lg' }}
-            >
-              {filteredCitations.map((citation) => (
-                <CitationCard
-                  key={citation.id}
-                  {...citation}
-                  dashboardRefresh={handleDashboardRefresh}
-                  handleDrawer={handleDrawer}
-                />
-              ))}
-            </SimpleGrid>
+          ) : citations.length === 0 ? (
+            <EmptyState handleDrawer={handleDrawer} />
           ) : (
-            //TODO - Implement ListView same as CitationCard
-            <div>Future List view</div>
-            // <ListView dashboardRefresh={handleDashboardRefresh} />
+            <>
+              {filteredCitations.length === 0 ? (
+                <Center style={{ height: '30vh' }}>
+                  <Stack align="center" gap="md">
+                    <Text size="xl">No citations found</Text>
+                    <Text c="dimmed">Try adjusting your search or filters</Text>
+                    <Button variant="subtle" onClick={() => setSearchQuery('')}>
+                      Clear Search
+                    </Button>
+                  </Stack>
+                </Center>
+              ) : viewMode === 'grid' || isMobile ? (
+                <SimpleGrid
+                  cols={{ base: 1, sm: 2, lg: 3 }}
+                  spacing={{ base: 'md', sm: 'lg' }}
+                  verticalSpacing={{ base: 'md', sm: 'lg' }}
+                >
+                  {filteredCitations.map((citation) => (
+                    <CitationCard
+                      key={citation.id}
+                      {...citation}
+                      dashboardRefresh={handleDashboardRefresh}
+                      handleDrawer={handleDrawer}
+                    />
+                  ))}
+                </SimpleGrid>
+              ) : (
+                //TODO - Implement ListView same as CitationCard
+                <div>Future List view</div>
+                // <ListView dashboardRefresh={handleDashboardRefresh} />
+              )}
+
+              {/* Stats Footer */}
+              <Box mt="xl">
+                <Text size="sm" c="dimmed">
+                  Showing {filteredCitations.length} of {citations.length}{' '}
+                  citations
+                </Text>
+              </Box>
+            </>
           )}
 
-          {/* Stats Footer */}
-          <Box mt="xl">
-            <Text size="sm" c="dimmed">
-              Showing {filteredCitations.length} of {citations.length} citations
-            </Text>
-          </Box>
-        </>
-      )}
-      <Drawer
-        opened={drawerOpened}
-        onClose={() => setDrawerOpened(false)}
-        title={formMode === 'add' ? 'Add Citation' : 'Edit Citation'}
-        padding={isMobile ? 'md' : 'xl'}
-        size="xl"
-        position="left"
-      >
-        <CitationInputForm
-          dashboardRefresh={handleDashboardRefresh}
-          formMode={formMode}
-          defaultCitation={defaultCitation}
-        />
-      </Drawer>
+          <Drawer
+            opened={drawerOpened}
+            onClose={() => setDrawerOpened(false)}
+            title={formMode === 'add' ? 'Add Citation' : 'Edit Citation'}
+            padding={isMobile ? 'md' : 'xl'}
+            size="xl"
+            position="left"
+          >
+            <CitationInputForm
+              dashboardRefresh={handleDashboardRefresh}
+              formMode={formMode}
+              defaultCitation={defaultCitation}
+            />
+          </Drawer>
+        </Tabs.Panel>
+        <Tabs.Panel value="collections" pt="xs">
+          {/* <CollectionsList /> */}
+          <CollectionsDashboard />
+        </Tabs.Panel>
+      </Tabs>
     </Container>
   )
 }

@@ -15,8 +15,8 @@ const getCertPath = () => {
   // For Vercel production
   return path.join(process.cwd(), 'certs', 'prod-ca-2021.crt')
 }
+//Record<string, Knex.Config>
 
-console.log('KNEX FILE')
 const config: { [key: string]: Knex.Config } = {
   development: {
     client: 'postgresql',
@@ -53,5 +53,5 @@ const config: { [key: string]: Knex.Config } = {
     pool: { min: 0, max: 7 }, // Match your working pool settings
   },
 }
-
+console.log('KNEX FILE', config)
 export default config

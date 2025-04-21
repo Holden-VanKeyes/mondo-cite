@@ -8,6 +8,7 @@ import {
   Menu,
   Box,
   Spoiler,
+  Tooltip,
 } from '@mantine/core'
 import {
   Bookmark,
@@ -17,11 +18,13 @@ import {
   FolderPlus,
   Share,
   Trash,
+  Tool,
 } from 'tabler-icons-react'
 import css from './CitationCard.module.css'
 import { notifications } from '@mantine/notifications'
 import CopyCitation from './CopyCitation'
 import type { Citation } from '@/types'
+import { DownloadCitation } from './DownloadCitation'
 
 export default function CitationCard(
   props: Citation & {
@@ -130,28 +133,32 @@ export default function CitationCard(
             </Text>
           )}
           <Group>
-            <ActionIcon
-              variant="outline"
-              onClick={() => {
-                handleDrawer(citation, 'edit')
-              }}
-            >
-              <Edit size={16} />
-            </ActionIcon>
+            <Tooltip label="edit">
+              <ActionIcon
+                variant="outline"
+                onClick={() => {
+                  handleDrawer(citation, 'edit')
+                }}
+              >
+                <Edit size={16} />
+              </ActionIcon>
+            </Tooltip>
 
-            <ActionIcon variant="outline">
-              <Share size={16} />
-            </ActionIcon>
+            <Tooltip label="share">
+              <ActionIcon variant="outline" color="gray">
+                <Share size={16} />
+              </ActionIcon>
+            </Tooltip>
 
             <CopyCitation citation={citation} variant={'menu-item'} />
 
-            <ActionIcon variant="outline">
-              <Download size={14} />
-            </ActionIcon>
+            <DownloadCitation citation={citation} />
 
-            <ActionIcon variant="outline">
-              <FolderPlus size={14} />
-            </ActionIcon>
+            <Tooltip label="add to collection">
+              <ActionIcon variant="outline" color="gray">
+                <FolderPlus size={14} />
+              </ActionIcon>
+            </Tooltip>
 
             <Menu shadow="md" width={200}>
               <Menu.Target>
